@@ -1,0 +1,39 @@
+﻿<ContentControl x:Class="PanelDesigner.OutlineViewControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:l="clr-namespace:PanelDesigner"
+             mc:Ignorable="d">
+    <ContentControl.CommandBindings>
+        <CommandBinding Command="l:PanelDesigner.SelectPanelCommand" CanExecute="CommandSelectPanel_CanExecute" Executed="commandSelectPanel_Executed" />
+    </ContentControl.CommandBindings>
+    <ContentControl.Resources>
+        <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
+        <l:FrameworkElementGetTypeToTextConverter x:Key="frameworkElementGetTypeToTextConverter" />
+        <l:StringIsNullOrWhiteSpaceConverter x:Key="stringIsNullOrWhiteSpaceConverter" />
+        <ContextMenu x:Key="contextMenu">
+            <MenuItem Command="l:PanelDesigner.SelectPanelCommand" Header="Select Panel" />
+        </ContextMenu>
+    </ContentControl.Resources>
+    <TreeView x:Name="treeView" IsEnabled="False" SelectedItemChanged="treeView_SelectedItemChanged">
+        <TreeView.ItemTemplate>
+            <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock FontWeight="Bold" Text="[" Visibility="{Binding Path=IsSelectedPanel, Converter={StaticResource booleanToVisibilityConverter}}" />
+                    <TextBlock FontWeight="Bold" Padding="1" Text="{Binding Path=Element, Converter={StaticResource frameworkElementGetTypeToTextConverter}}" />
+                    <TextBlock Text=" " />
+                    <TextBlock Padding="1" Text="{Binding Path=Element.Name, Converter={StaticResource stringIsNullOrWhiteSpaceConverter}}" />
+                    <TextBlock FontWeight="Bold" Text="]" Visibility="{Binding Path=IsSelectedPanel, Converter={StaticResource booleanToVisibilityConverter}}" />
+                </StackPanel>
+            </HierarchicalDataTemplate>
+        </TreeView.ItemTemplate>
+        <TreeView.ItemContainerStyle>
+            <Style TargetType="{x:Type TreeViewItem}">
+                <Setter Property="ContextMenu" Value="{StaticResource contextMenu}" />
+                <Setter Property="IsExpanded" Value="True" />
+                <Setter Property="IsSelected" Value="{Binding Path=IsSelectedElement, Mode=TwoWay}" />
+            </Style>
+        </TreeView.ItemContainerStyle>
+    </TreeView>
+</ContentControl>

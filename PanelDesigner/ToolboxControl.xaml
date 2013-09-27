@@ -1,0 +1,35 @@
+﻿<ContentControl x:Class="PanelDesigner.ToolboxControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:s="clr-namespace:System;assembly=mscorlib"
+             xmlns:l="clr-namespace:PanelDesigner"
+             mc:Ignorable="d">
+    <TreeView x:Name="treeView" AllowDrop="True">
+        <TreeView.Resources>
+            <HierarchicalDataTemplate DataType="{x:Type l:ToolboxCategory}" ItemsSource="{Binding Path=Types}">
+                <HierarchicalDataTemplate.ItemContainerStyle>
+                    <Style TargetType="{x:Type TreeViewItem}">
+                        <EventSetter Event="TreeViewItem.PreviewMouseDown" Handler="treeViewItem_PreviewMouseDown"/>
+                        <EventSetter Event="TreeViewItem.PreviewMouseMove" Handler="treeViewItem_PreviewMouseMove"/>
+                    </Style>
+                </HierarchicalDataTemplate.ItemContainerStyle>
+                <TextBlock FontWeight="Bold" Margin="1" MinWidth="100" Padding="3" Text="{Binding Path=CategoryName}" />
+            </HierarchicalDataTemplate>
+            <HierarchicalDataTemplate DataType="{x:Type s:Type}">
+                <TextBlock Padding="3" Text="{Binding Path=Name}" />
+            </HierarchicalDataTemplate>
+        </TreeView.Resources>
+        <TreeView.ItemContainerStyle>
+            <Style TargetType="{x:Type TreeViewItem}">
+                <Style.Triggers>
+                    <Trigger Property="IsSelected" Value="false">
+                        <Setter Property="Background" Value="#FFE9ECEE" />
+                    </Trigger>
+                </Style.Triggers>
+                <Setter Property="IsExpanded" Value="True" />
+            </Style>
+        </TreeView.ItemContainerStyle>
+    </TreeView>
+</ContentControl>

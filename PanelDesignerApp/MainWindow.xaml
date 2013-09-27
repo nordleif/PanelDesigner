@@ -1,0 +1,63 @@
+﻿<Window x:Class="PanelDesignerApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:p="clr-namespace:PanelDesigner;assembly=PanelDesigner"
+        xmlns:l="clr-namespace:PanelDesignerApp"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" 
+        Loaded="Window_Loaded_1"
+        Title="Panel Designer" Height="800" Width="800">
+    <Window.ContextMenu>
+        <ContextMenu>
+            <MenuItem x:Name="menuItemDesignMode" Click="menuItemDesignMode_Click" Header="DesignMode" Margin="3" />
+            <MenuItem x:Name="menuItemTest" Click="menuItemTest_Click" Header="Test" Margin="3" />
+        </ContextMenu>
+    </Window.ContextMenu>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="auto" MinWidth="9" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Menu Grid.Row="0" Grid.ColumnSpan="3">
+            <MenuItem Header="File">
+            </MenuItem>
+            <MenuItem Header="Edit">
+                <MenuItem x:Name="menuItemDelete" Click="menuItemDelete_Click_1"  Header="Delete" />
+                <MenuItem Command="ApplicationCommands.Paste" />
+                <MenuItem Command="p:PanelDesigner.SelectPanelCommand" Header="Select Panel" />
+            </MenuItem>
+        </Menu>
+        <ToolBar Grid.Row="1" Grid.ColumnSpan="3">
+            <ToggleButton IsChecked="{Binding Path=DesignMode, ElementName=panelDesigner}">Design Mode</ToggleButton>
+            <Button Command="p:PanelDesigner.SelectPanelCommand">Select Panel</Button>
+        </ToolBar>
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="2*" />
+            </Grid.RowDefinitions>
+            <p:ToolboxControl x:Name="toolbox" Grid.Row="0" />
+            <p:OutlineViewControl x:Name="outlineView" Grid.Row="1" />
+            <xctk:PropertyGrid x:Name="propertyGrid" Grid.Row="2" />
+        </Grid>
+        <p:PanelDesigner x:Name="panelDesigner" Grid.Row="2" Grid.Column="2">
+            <Canvas x:Name="canvas" Background="Transparent">
+                <TextBox x:Name="textBox1" AcceptsReturn="True" Height="54" Canvas.Left="29" TextWrapping="Wrap" Text="TextBox" Canvas.Top="76" Width="80"/>
+                <Button x:Name="button1" Content="Button" Canvas.Left="204" Canvas.Top="302" Width="75"/>
+                <Button x:Name="button2" Content="Button" Canvas.Left="74" Canvas.Top="302" Width="75"/>
+                <Canvas Background="LightGreen" HorizontalAlignment="Left" Height="221" Grid.Row="1" VerticalAlignment="Top" Width="270" Canvas.Left="74" Canvas.Top="386">
+                    <Label Content="Label" Canvas.Left="70" Canvas.Top="47"/>
+                    <RadioButton Content="RadioButton" Canvas.Left="108" Canvas.Top="114"/>
+                </Canvas>
+                <l:TestControl Width="142" Height="173" Canvas.Left="317" Canvas.Top="41" />
+            </Canvas>
+        </p:PanelDesigner>
+
+    </Grid>
+</Window>

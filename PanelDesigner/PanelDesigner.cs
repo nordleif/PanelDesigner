@@ -656,15 +656,11 @@ namespace PanelDesigner
             {
                 var element = e.NewValue as FrameworkElement;
 
-                if (element != SelectedPanel && !element.IsDescendantOf(SelectedPanel))
+                if (element == null)
                 {
-                    if (element is Panel)
-                        SelectedPanel = element as Panel;
-                    else
-                        SelectedPanel = element.Parent as Panel;
+
                 }
-                
-                if (element != null)
+                else
                 {
                     if (!SelectedElements.Contains(element))
                     {
@@ -676,11 +672,14 @@ namespace PanelDesigner
 
                         SelectedElements.Add(element);
                     }
-                }
 
-                var index = SelectedElements.IndexOf(element);
-                if (index > 0)
-                    SelectedElements.Move(index, 0);
+                    var index = SelectedElements.IndexOf(element);
+                    if (index > 0)
+                        SelectedElements.Move(index, 0);
+
+                    if (element != SelectedPanel)
+                        SelectedPanel = element.Parent as Panel;
+                }
             }
 
             if (SelectedElementChanged != null)

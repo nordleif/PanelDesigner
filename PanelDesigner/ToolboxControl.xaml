@@ -6,7 +6,7 @@
              xmlns:s="clr-namespace:System;assembly=mscorlib"
              xmlns:l="clr-namespace:PanelDesigner"
              mc:Ignorable="d">
-    <TreeView x:Name="treeView" AllowDrop="True">
+    <TreeView x:Name="treeView" AllowDrop="True" ItemsSource="{Binding Path=Categories,  RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type l:ToolboxControl}}}">
         <TreeView.Resources>
             <HierarchicalDataTemplate DataType="{x:Type l:ToolboxCategory}" ItemsSource="{Binding Path=Types}">
                 <HierarchicalDataTemplate.ItemContainerStyle>

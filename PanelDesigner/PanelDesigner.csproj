@@ -87,10 +87,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>set Version=5.3
+    <PostBuildEvent>set Version=5.5
 if exist "$(SolutionDir)\CopyCustom.bat" call "$(SolutionDir)CopyCustom.bat" "$(SolutionDir)" "$(TargetDir)" "$(TargetName)"
-if exist "$(SolutionDir)\..\GO.Main\GO.Main.Windows\bin\Debug\" copy "$(TargetDir)$(TargetName).dll" "$(SolutionDir)\..\GO.Main\GO.Main.Windows\bin\Debug\"
-if exist "$(SolutionDir)\..\GO.Main\GO.Main.Windows\bin\Debug\" copy "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)\..\GO.Main\GO.Main.Windows\bin\Debug\"
 if exist "%25ProgramFiles%25\B.V. Electronic\GuideOnLine %25Version%25" copy "$(TargetDir)$(TargetName).dll" "%25ProgramFiles%25\B.V. Electronic\GuideOnLine %25Version%25"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

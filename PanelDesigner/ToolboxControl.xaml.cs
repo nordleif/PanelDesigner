@@ -37,17 +37,17 @@ namespace PanelDesigner
         public ToolboxControl()
         {
             InitializeComponent();
-            treeView.ItemsSource = Categories;
         }
 
         public ObservableCollection<ToolboxCategory> Categories
         {
             get { return (ObservableCollection<ToolboxCategory>)GetValue(CategoriesProperty); }
+            set { SetValue(CategoriesProperty, value); }
         }
 
         protected virtual void OnCategoriesPropertyChanged(DependencyPropertyChangedEventArgs e)
         {
-
+            
         }
 
         private void treeViewItem_PreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -66,7 +66,6 @@ namespace PanelDesigner
                 return;
 
             var data = new DataObject(typeof(Type), type);
-
             DragDrop.DoDragDrop(this, data, DragDropEffects.Move);
         }
     }

@@ -64,6 +64,7 @@ namespace PanelDesigner
 
         private List<Adorner> m_adorners = new List<Adorner>();
         private AlignAdorner m_alignAdorner;
+        private bool m_ignoreOnSelectedElementChanged;
         private bool m_isDragging;
         private Point m_mouseDownOffsetPoint;
         private Point m_mouseDownStartPoint;
@@ -296,6 +297,17 @@ namespace PanelDesigner
 
         protected override void OnContentChanged(object oldContent, object newContent)
         {
+            var element = newContent as FrameworkElement;
+            if (element != null)
+            {
+                if (element.TryGetValue("Background", null) == null)
+                    element.TrySetValue("Background", Brushes.Transparent);
+            }
+            
+            SelectedElements.Clear();
+            SelectedElement = null;
+            SelectedPanel = element as Panel;
+
             if (ContentChanged != null)
                 ContentChanged(this, new ContentChangedEventArgs(oldContent, newContent));
         }
@@ -351,7 +363,9 @@ namespace PanelDesigner
             var element = instance as FrameworkElement;
             if (element == null)
                 return;
-
+            
+            element.TrySetValue("Background", Brushes.Transparent);
+            
             var panel = SelectedPanel != null ? SelectedPanel : Content as Panel;
 
             if (panel is Canvas)
@@ -360,7 +374,6 @@ namespace PanelDesigner
                 Canvas.SetLeft(element, position.X);
                 Canvas.SetTop(element, position.Y);
 
-                element.TrySetValue("Content", type.Name);
                 element.TrySetValue("Text", type.Name);
                 element.TrySetValue("Width", 75);
             }
@@ -652,34 +665,45 @@ namespace PanelDesigner
 
         protected virtual void OnSelectedElementChanged(DependencyPropertyChangedEventArgs e)
         {
-            if (e.NewValue != null)
+            try
             {
-                var element = e.NewValue as FrameworkElement;
+                if (m_ignoreOnSelectedElementChanged)
+                    return;
+                m_ignoreOnSelectedElementChanged = true;
 
-                if (element == null)
+                if (e.NewValue != null)
                 {
+                    var element = e.NewValue as FrameworkElement;
 
-                }
-                else
-                {
-                    if (!SelectedElements.Contains(element))
+                    if (element == null)
                     {
-                        if (!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl))
-                            SelectedElements.Clear();
-
-                        if (SelectedElement == SelectedPanel)
-                            SelectedElements.Clear();
-
-                        SelectedElements.Add(element);
+                        SelectedElements.Clear();
                     }
+                    else
+                    {
+                        if (!SelectedElements.Contains(element))
+                        {
+                            if (!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl))
+                                SelectedElements.Clear();
 
-                    var index = SelectedElements.IndexOf(element);
-                    if (index > 0)
-                        SelectedElements.Move(index, 0);
+                            if (SelectedElement == SelectedPanel)
+                                SelectedElements.Clear();
 
-                    if (element != SelectedPanel)
-                        SelectedPanel = element.Parent as Panel;
+                            SelectedElements.Add(element);
+                        }
+
+                        var index = SelectedElements.IndexOf(element);
+                        if (index > 0)
+                            SelectedElements.Move(index, 0);
+
+                        if (element != SelectedPanel)
+                            SelectedPanel = element.Parent as Panel;
+                    }
                 }
+            }
+            finally
+            {
+                m_ignoreOnSelectedElementChanged = false;
             }
 
             if (SelectedElementChanged != null)
@@ -877,9 +901,6 @@ namespace PanelDesigner
                     }
                 }
             }
-
-            if (SelectedElement != SelectedElements.FirstOrDefault())
-                SelectedElement = SelectedElements.FirstOrDefault();
 
             CommandManager.InvalidateRequerySuggested();
         }

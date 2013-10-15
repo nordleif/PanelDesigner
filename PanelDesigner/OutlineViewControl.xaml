@@ -6,7 +6,7 @@
              xmlns:l="clr-namespace:PanelDesigner"
              mc:Ignorable="d">
     <ContentControl.CommandBindings>
-        <CommandBinding Command="l:PanelDesigner.SelectPanelCommand" CanExecute="CommandSelectPanel_CanExecute" Executed="commandSelectPanel_Executed" />
+        <CommandBinding Command="l:PanelDesigner.SelectPanelCommand" CanExecute="SelectedPanelCommand_CanExecute" Executed="SelectPanelCommand_Executed" />
     </ContentControl.CommandBindings>
     <ContentControl.Resources>
         <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />

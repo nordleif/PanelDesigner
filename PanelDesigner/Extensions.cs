@@ -22,7 +22,8 @@ namespace PanelDesigner
         public static void AddAdorner(this FrameworkElement element, Adorner adorner)
         {
             var adornerLayer = AdornerLayer.GetAdornerLayer(element);
-            adornerLayer.Add(adorner);
+            if (adornerLayer != null)
+                adornerLayer.Add(adorner);
         }
 
         public static bool ContainsAdorner<T>(this FrameworkElement element) where T: class
@@ -52,6 +53,20 @@ namespace PanelDesigner
         {
             var adornerLayer = AdornerLayer.GetAdornerLayer(element);
             adornerLayer.Remove(adorner);
+        }
+
+        public static object TryGetValue(this FrameworkElement element, string propertyName, object defaultValue)
+        {
+            var result = defaultValue;
+            try
+            {
+                var type = element.GetType();
+                var property = type.GetProperty(propertyName);
+                if (property != null)
+                    result = property.GetValue(element, null);
+            }
+            catch { }
+            return result;
         }
 
         public static void TrySetValue(this FrameworkElement element, string propertyName, object value)

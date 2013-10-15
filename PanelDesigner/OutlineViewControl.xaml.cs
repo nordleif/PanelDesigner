@@ -53,7 +53,7 @@ namespace PanelDesigner
                 panelDesigner.ContentChanged -= panelDesigner_ContentChanged;
                 panelDesigner.DesignModeChanged -= panelDesigner_DesignModeChanged;
                 panelDesigner.SelectedElementChanged -= panelDesigner_SelectedElementChanged;
-                PanelDesigner.SelectedPanelChanged -= PanelDesigner_SelectedPanelChanged;
+                PanelDesigner.SelectedPanelChanged -= panelDesigner_SelectedPanelChanged;
             }
             
             panelDesigner = e.NewValue as PanelDesigner;
@@ -67,26 +67,11 @@ namespace PanelDesigner
             panelDesigner.ContentChanged += panelDesigner_ContentChanged;
             panelDesigner.DesignModeChanged += panelDesigner_DesignModeChanged;
             panelDesigner.SelectedElementChanged += panelDesigner_SelectedElementChanged;
-            PanelDesigner.SelectedPanelChanged += PanelDesigner_SelectedPanelChanged;
+            panelDesigner.SelectedPanelChanged += panelDesigner_SelectedPanelChanged;
 
             treeView.IsEnabled = panelDesigner.DesignMode; 
             if (panelDesigner.Content != null)
                 treeView.ItemsSource = new ObservableCollection<OutlineViewItem> { new OutlineViewItem(panelDesigner.Content as FrameworkElement) };
-        }
-
-        private void CommandSelectPanel_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            if (e.Command == PanelDesigner.SelectPanelCommand)
-            {
-                if (PanelDesigner.DesignMode && PanelDesigner.SelectedElement is Panel && PanelDesigner.SelectedElement != PanelDesigner.SelectedPanel)
-                    e.CanExecute = true;
-            }
-        }
-
-        private void commandSelectPanel_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (e.Command == PanelDesigner.SelectPanelCommand)
-                PanelDesigner.SelectedPanel = PanelDesigner.SelectedElement as Panel;
         }
 
         private OutlineViewItem FindOutlineViewItem(UIElement element)
@@ -120,6 +105,12 @@ namespace PanelDesigner
         private void panelDesigner_ContentChanged(object sender, ContentChangedEventArgs e)
         {
             treeView.ItemsSource = new ObservableCollection<OutlineViewItem> { new OutlineViewItem(e.NewContent as FrameworkElement) };
+            if (PanelDesigner.SelectedPanel != null)
+            {
+                var item = FindOutlineViewItem(PanelDesigner.SelectedPanel);
+                if (item != null)
+                    item.IsSelectedPanel = true;
+            }
         }
 
         private void panelDesigner_DesignModeChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -146,7 +137,7 @@ namespace PanelDesigner
             }
         }
 
-        private void PanelDesigner_SelectedPanelChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private void panelDesigner_SelectedPanelChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             var oldElement = e.OldValue as UIElement;
             if (oldElement != null)
@@ -163,6 +154,21 @@ namespace PanelDesigner
                 if (item != null)
                     item.IsSelectedPanel = true;
             }
+        }
+
+        private void SelectedPanelCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (e.Command == PanelDesigner.SelectPanelCommand)
+            {
+                if (PanelDesigner.DesignMode && PanelDesigner.SelectedElement is Panel && PanelDesigner.SelectedElement != PanelDesigner.SelectedPanel)
+                    e.CanExecute = true;
+            }
+        }
+
+        private void SelectPanelCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (e.Command == PanelDesigner.SelectPanelCommand)
+                PanelDesigner.SelectedPanel = PanelDesigner.SelectedElement as Panel;
         }
 
         private void treeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)

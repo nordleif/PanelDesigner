@@ -734,7 +734,7 @@ namespace PanelDesigner
         protected virtual void OnSelectedPanelChanged(DependencyPropertyChangedEventArgs e)
         {
             if (!DesignMode)
-                throw new DesignModeException();
+                return;
 
             SelectedElements.Clear();
 

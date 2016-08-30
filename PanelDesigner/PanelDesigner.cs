@@ -154,6 +154,8 @@ namespace PanelDesigner
 
         public event EventHandler<DependencyPropertyChangedEventArgs> DesignModeChanged;
 
+        public event EventHandler<ElementDroppedEventArgs> ElementDropped;
+
         public event EventHandler<DependencyPropertyChangedEventArgs> SelectedElementChanged;
 
         public event EventHandler SelectedElementsChanged;
@@ -350,6 +352,12 @@ namespace PanelDesigner
                 DesignModeChanged(this, e);
         }
 
+        protected virtual void OnElementDropped(FrameworkElement element)
+        {
+            if (ElementDropped != null)
+                ElementDropped(this, new ElementDroppedEventArgs(element));
+        }
+
         protected override void OnDrop(DragEventArgs e)
         {
             if (!DesignMode)
@@ -388,6 +396,8 @@ namespace PanelDesigner
                 Content = element;
                 SelectedPanel = element as Panel;
             }
+
+            OnElementDropped(element);
         }
 
         protected virtual T OnGetService<T>() where T : class
